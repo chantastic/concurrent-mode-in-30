@@ -13,7 +13,17 @@ function App() {
       </React.Suspense>
 
       <React.Suspense fallback={<div>catching pokemon...</div>}>
-        <PokemonList resource={initialPokemonCollection} />
+        <PokemonList
+          as="ul"
+          renderItem={(pokemon) => (
+            <li key={pokemon.id}>
+              <button onClick={() => alert("changing pokemon" + pokemon.id)}>
+                {pokemon.id} {pokemon.name}
+              </button>
+            </li>
+          )}
+          resource={initialPokemonCollection}
+        />
       </React.Suspense>
     </div>
   );

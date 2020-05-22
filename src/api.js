@@ -9,6 +9,13 @@ export function fetchPokemon(id = 1) {
 export function fetchPokemonCollection() {
   return fetch(`https://pokeapi.co/api/v2/pokemon`)
     .then((res) => res.json())
+    .then((res) => ({
+      ...res,
+      results: res.results.map((pokemon) => ({
+        ...pokemon,
+        id: pokemon.url.split("/")[6],
+      })),
+    }))
     .then(sleep(1000));
 }
 

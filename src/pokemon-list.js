@@ -1,11 +1,10 @@
 import React from "react";
 
-export default function PokemonList({ resource, ...props }) {
-  return (
-    <ul {...props}>
-      {resource.read().results.map((pokemon) => (
-        <li>{pokemon.name}</li>
-      ))}
-    </ul>
-  );
+export default function PokemonList({
+  as: As = React.Fragment,
+  resource,
+  renderItem = (pokemon) => <li>{pokemon.name}</li>,
+  ...props
+}) {
+  return <As {...props}>{resource.read().results.map(renderItem)}</As>;
 }
