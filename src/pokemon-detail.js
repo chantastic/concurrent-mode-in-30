@@ -1,7 +1,7 @@
 import React from "react";
 
 export default function PokemonDetail({ resource, ...props }) {
-  let { name, types } = resource;
+  let { name, types } = resource.read();
 
   return (
     <article {...props}>
