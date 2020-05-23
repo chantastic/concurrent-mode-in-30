@@ -2,7 +2,7 @@ import React from "react";
 
 export default function PokemonDetail({
   resource,
-  isStale,
+  // isStale,
   children,
   ...props
 }) {
@@ -22,7 +22,7 @@ export default function PokemonDetail({
   }
 
   return (
-    <article {...props} style={isStale ? { color: "lightgray" } : null}>
+    <article {...props}>
       {typeof children === "function" ? (
         children(pokemon, <Stats {...pokemon} />)
       ) : (
