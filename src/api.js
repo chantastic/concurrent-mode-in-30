@@ -3,7 +3,8 @@ import sleep from "sleep-promise";
 export function fetchPokemon(id = 1) {
   return fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
     .then((res) => res.json())
-    .then(sleep(500));
+    .then((pokemon) => ({ ...pokemon }))
+    .then(sleep(1000));
 }
 
 export function fetchPokemonCollection() {
@@ -16,7 +17,7 @@ export function fetchPokemonCollection() {
         id: pokemon.url.split("/")[6],
       })),
     }))
-    .then(sleep(1000));
+    .then(sleep(2000));
 }
 
 export function suspensify(promise) {
