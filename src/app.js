@@ -1,14 +1,17 @@
-/* 
-  # Suspense for components
-    - import PokemonDetail dynamically and wrap in `React.lazy`
-    - ErrorBoundary w/fallback
-    - React Suspense w/fallback
-  # Wrap Data promises
-    - import 
+/*
+ * 1. import PokemonDetail dynamically
+ * * app breaks because it loads with the component it needs to render
+ * * this means it's working
+ * 2. wrap in ErrorBoundary with Fallback
+ * * you can get this off the shelf by googling "react error boundary"
+ * * yay! we caught the error but it still doesn't work
+ * * read error
+ * 3. wrap in React.Suspense component with fallback
  */
 import React from "react";
 import ErrorBoundary from "./error-boundary";
-import { suspensify } from "./api";
+import { suspensify, fetchPokemon } from "./api.js";
+// import PokemonDetail from "./pokemon-detail";
 const PokemonDetail = React.lazy(() => import("./pokemon-detail"));
 
 function App() {
@@ -17,7 +20,7 @@ function App() {
       <header style={{ fontSize: "2rem", fontWeight: "bold" }}>Pokedex</header>
 
       <ErrorBoundary>
-        <React.Suspense fallback={<div>Catching Pokemon...</div>}>
+        <React.Suspense fallback="...gotta catch 'em all">
           <PokemonDetail resource={initialPokemon} />
         </React.Suspense>
       </ErrorBoundary>
@@ -26,7 +29,9 @@ function App() {
 }
 
 let initialPokemon = suspensify(
-  new Promise((_) => {})
+  fetchPokemon(4)
+  // Promise.reject()
+  // new Promise(() => {})
   // Promise.resolve({
   //   name: "bulbasaur",
   //   types: [

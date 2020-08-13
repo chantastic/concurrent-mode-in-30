@@ -7,6 +7,7 @@ export default function PokemonDetail({
   ...props
 }) {
   let pokemon = resource.read();
+  // let pokemon = resource.read();
 
   function Stats(props) {
     return (
