@@ -2,7 +2,7 @@ import React from "react";
 
 export default function PokemonDetail({
   resource,
-  // isStale,
+  isStale,
   children,
   ...props
 }) {
@@ -11,7 +11,7 @@ export default function PokemonDetail({
   function Stats(props) {
     return (
       <React.Fragment>
-        <h1>{props.name}</h1>
+        <h1 style={ isStale ? { color: "gray"} : null}>{props.name}</h1>
         <ol>
           {props.types.map(({ type }) => (
             <li key={type.name}>{type.name}</li>

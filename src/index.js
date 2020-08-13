@@ -15,3 +15,9 @@ ReactDOM.unstable_createRoot(document.getElementById("root")).render(
     <App />
   </React.StrictMode>
 );
+
+// ReactDOM.unstable_createRoot(document.getElementById("root")).render(
+//   <React.StrictMode>
+//     <App />
+//   </React.StrictMode>
+// );
