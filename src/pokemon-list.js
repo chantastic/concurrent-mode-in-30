@@ -1,8 +1,11 @@
 import React from "react";
+import { suspensify, fetchPokemonCollection } from "./api";
+
+let resource = suspensify(fetchPokemonCollection());
 
 export default function PokemonList({
   as: As = React.Fragment,
-  resource,
+  // resource,
   renderItem = (pokemon) => <li>{pokemon.name}</li>,
   ...props
 }) {

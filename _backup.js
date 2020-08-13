@@ -1,88 +1,79 @@
 import React from "react";
-import PokemonList from "./pokemon-list";
-import { suspensify, fetchPokemon, fetchPokemonCollection } from "./api";
-import DelaySpinner from "./spinner";
 import ErrorBoundary from "./error-boundary";
+import { suspensify, fetchPokemon } from "./api.js";
+// import PokemonDetail from "./pokemon-detail";
 const PokemonDetail = React.lazy(() => import("./pokemon-detail"));
+const PokemonList = React.lazy(() => import("./pokemon-list"));
 
 function App() {
-  let [currentPokemon, setPokemon] = React.useState(initialPokemon);
-  // let [startTransition, isPending] = React.unstable_useTransition({
-  //   timeoutMs: 500,
-  // });
-  let deferredPokemon = React.unstable_useDeferredValue(currentPokemon, {
-    timeoutMs: 1000,
+  let [pokemon, updatePokemon] = React.useState(initialPokemon);
+  let [startTransition, isPending] = React.unstable_useTransition({
+    timeoutMs: 2000,
   });
-
-  let isPending = currentPokemon !== deferredPokemon;
 
   return (
     <div>
       <header style={{ fontSize: "2rem", fontWeight: "bold" }}>Pokedex</header>
 
-      <div
-        style={{
-          display: "grid",
-          gridAutoColumns: "1fr",
-          gridAutoFlow: "column",
-        }}
-      >
-        <React.unstable_SuspenseList revealOrder="forwards" tail="collapsed">
-          <div>
-            <ErrorBoundary fallback="Couldn't catch 'em all...">
-              <React.Suspense fallback={<div>catching pokemon...</div>}>
-                <PokemonDetail resource={deferredPokemon} isStale={isPending}>
-                  {(pokemon, details) => (
-                    <React.Fragment>
-                      {details}
+      <ErrorBoundary>
+        <div style={{ display: "grid", gridTemplateColumns: "200px 1fr" }}>
+          <React.unstable_SuspenseList revealOrder="forwards" tail="collapsed">
+            <React.Suspense fallback={<div>...fetching your pokemon</div>}>
+              <div>
+                <PokemonDetail resource={pokemon}>
+                  {(resolvedPokemon, stats) => (
+                    <>
+                      <div style={isPending ? { color: "gray" } : null}>
+                        {stats}
+                      </div>
 
                       <button
                         type="button"
                         onClick={() =>
-                          setPokemon(suspensify(fetchPokemon(pokemon.id + 1)))
+                          startTransition(() =>
+                            updatePokemon(
+                              suspensify(fetchPokemon(resolvedPokemon.id + 1))
+                            )
+                          )
                         }
                       >
-                        next
+                        Next
+                        {isPending && "…"}
                       </button>
-                      {isPending && <DelaySpinner />}
-                    </React.Fragment>
+                    </>
                   )}
                 </PokemonDetail>
-              </React.Suspense>
-            </ErrorBoundary>
-          </div>
-
-          <div>
-            <React.Suspense fallback={<div>gotta catch 'em all...</div>}>
-              <PokemonList
-                as="ul"
-                renderItem={(pokemon) => (
-                  <li key={pokemon.id}>
-                    <button
-                      type="button"
-                      onClick={
-                        () =>
-                          // startTransition(() =>
-                          setPokemon(suspensify(fetchPokemon(pokemon.id)))
-                        // )
-                      }
-                    >
-                      {pokemon.id} {pokemon.name}
-                    </button>
-                  </li>
-                )}
-                resource={initialPokemonCollection}
-              />
+              </div>
             </React.Suspense>
-          </div>
-        </React.unstable_SuspenseList>
-      </div>
+            <React.Suspense fallback={<div>...gotta fetch 'em all</div>}>
+              <div>
+                <PokemonList />
+              </div>
+            </React.Suspense>
+          </React.unstable_SuspenseList>
+        </div>
+      </ErrorBoundary>
     </div>
   );
 }
 
-let initialPokemon = suspensify(fetchPokemon(1));
-
-let initialPokemonCollection = suspensify(fetchPokemonCollection());
+let initialPokemon = suspensify(
+  fetchPokemon(4)
+  // Promise.reject()
+  // new Promise(() => {})
+  // Promise.resolve({
+  //   name: "bulbasaur",
+  //   types: [
+  //     {
+  //       slot: 2,
+  //       type: { name: "poison", url: "https://pokeapi.co/api/v2/type/4/" },
+  //     },
+  //     {
+  //       slot: 1,
+  //       type: { name: "grass", url: "https://pokeapi.co/api/v2/type/12/" },
+  //     },
+  //   ],
+  // })
+);
 
 export default App;

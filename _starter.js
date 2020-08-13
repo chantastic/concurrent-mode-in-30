@@ -3,11 +3,12 @@ import PokemonDetail from "./pokemon-detail";
 
 function App() {
   return (
-    <div>
-      <header style={{ fontSize: "2rem", fontWeight: "bold" }}>Pokedex</header>
-
-      <PokemonDetail resource={initialPokemon} />
-    </div>
+    <>
+      <h1>Pokedex</h1>
+      <div>
+        <PokemonDetail resource={initialPokemon} />
+      </div>
+    </>
   );
 }
 
