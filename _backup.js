@@ -7,17 +7,48 @@ const PokemonList = React.lazy(() => import("./pokemon-list"));
 
 function App() {
   let [pokemon, updatePokemon] = React.useState(initialPokemon);
-  let [startTransition, isPending] = React.unstable_useTransition({
-    timeoutMs: 2000,
-  });
+  let [isPending, startTransition] = React.useTransition();
 
   return (
-    <div>
+    <main>
       <header style={{ fontSize: "2rem", fontWeight: "bold" }}>Pokedex</header>
-
       <ErrorBoundary>
+        <React.Suspense fallback={<div>...fetching your pokemon</div>}>
+          <div>
+            <PokemonDetail resource={pokemon}>
+              {(resolvedPokemon, stats) => (
+                <>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      startTransition(() =>
+                        updatePokemon(
+                          suspensify(fetchPokemon(resolvedPokemon.id + 1))
+                        )
+                      )
+                    }
+                  >
+                    Next
+                    {isPending && "…"}
+                  </button>
+                  <div style={isPending ? { color: "gray" } : null}>
+                    {stats}
+                  </div>
+                </>
+              )}
+            </PokemonDetail>
+          </div>
+        </React.Suspense>
+        <React.Suspense fallback={<div>...gotta fetch 'em all</div>}>
+          <div>
+            <PokemonList />
+          </div>
+        </React.Suspense>
+      </ErrorBoundary>
+
+      {/* <ErrorBoundary>
         <div style={{ display: "grid", gridTemplateColumns: "200px 1fr" }}>
-          <React.unstable_SuspenseList revealOrder="forwards" tail="collapsed">
+          <React.SuspenseList revealOrder="forwards" tail="collapsed">
             <React.Suspense fallback={<div>...fetching your pokemon</div>}>
               <div>
                 <PokemonDetail resource={pokemon}>
@@ -50,10 +81,10 @@ function App() {
                 <PokemonList />
               </div>
             </React.Suspense>
-          </React.unstable_SuspenseList>
+          </React.SuspenseList>
         </div>
-      </ErrorBoundary>
-    </div>
+      </ErrorBoundary> */}
+    </main>
   );
 }
 
