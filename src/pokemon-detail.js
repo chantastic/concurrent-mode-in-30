@@ -1,19 +1,20 @@
 import React from "react";
 
 export default function PokemonDetail({ resource, children, ...props }) {
-  let pokemon = resource.read();
+  let pokemon = resource;
+  // let pokemon = resource.read();
 
-  return <article>{children(pokemon, <Stats {...pokemon} />)}</article>;
+  // return <article>{children(pokemon, <Stats {...pokemon} />)}</article>;
 
-  // return (
-  //   <article {...props}>
-  //     {typeof children === "function" ? (
-  //       children(pokemon, <Stats {...pokemon} />)
-  //     ) : (
-  //     <Stats {...pokemon} />
-  //     )}
-  //   </article>
-  // );
+  return (
+    <article {...props}>
+      {typeof children === "function" ? (
+        children(pokemon, <Stats {...pokemon} />)
+      ) : (
+      <Stats {...pokemon} />
+      )}
+    </article>
+  );
 }
 
 function Stats(props) {
